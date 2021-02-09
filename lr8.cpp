@@ -22,7 +22,9 @@ ostream& operator<< (ostream& out, const GUITAR& guitar )
 bool operator !=(const GUITAR& one, const GUITAR& two) {
     return one.Price != two.Price;
 }
-
+bool operator ==(const GUITAR& one, const GUITAR& two) {
+    return one.Price == two.Price;
+}
 
 template <typename T>
 struct Ring_element
@@ -67,8 +69,7 @@ void print(Ring_struct<T>& rg) {
         cout << "empty";
     }
     else {
-        Ring_element<T>* abc = rg.first;
-        Ring_element<T>* def = rg.last;
+        Ring_element<T>* abc = rg.first;       
         while (abc != rg.last) {
             cout << abc->value << " ";
             abc = abc->next;
@@ -92,8 +93,8 @@ void push_start(Ring_struct<T>& rg, T val) {
         abc->value = val;
         Ring_element<T>* def = rg.first;
        rg.first=abc;
-       rg.first-> next = def;
-       rg.first->prev = rg.last;
+       abc-> next = def;
+       abc->prev = rg.last;
        rg.last->next = abc;
     }
 }
@@ -118,31 +119,53 @@ void push_end(Ring_struct<T>& rg, T val) {
 }
 
 template <typename T>
-void pop_first(Ring_struct<T>& rg) {
+T pop_first(Ring_struct<T>& rg) {
     Ring_element<T>* abc = rg.first;  
-   Ring_element<T>* rl ;
-   rl = rg.first->next;
-    delete abc;
+   Ring_element<T>* rl = rg.first->next;;
+   T val = abc->value;   
     rg.first = rl;
-}
-template <typename T>
-void pop_last(Ring_struct<T>& rg) {
-    Ring_element<T>* abc = rg.last;
-    Ring_element<T>* rl;
-    rl = rg.last->prev;
+    rl->next = abc->next->next;
+    rl->prev = rg.last;
     delete abc;
-    rg.last = rl;
+    return val;
 }
 template <typename T>
-void find_pos(Ring_struct<T>& rg, T val) {
-    int counter=1;
+T pop_last(Ring_struct<T>& rg) {
+    Ring_element<T>* abc = rg.last;
+    Ring_element<T>* rl = rg.last->prev;
+    T val = abc->value;
+    rg.last = rl;
+    rl->prev = abc->prev->prev;
+    rl->next = rg.first;
+    delete abc;
+    return val;
+}
+template <typename T>
+int find_pos(Ring_struct<T>& rg, T val) {
+    int counter = 0;
+    int counter2 = 0;
     Ring_element<T>* abc = rg.first;
+    Ring_element<T>* def = rg.first;
+    while (def != rg.last) {
+        def = def->next;
+        counter2++;
+    }
     while (abc->value != val) {
         abc = abc->next;
         counter++;
-    }
-    cout << "element`s pos = " << counter;
+        if (abc->value == val) {
+            cout << "element`s pos is " << counter;
+            break;
+        }
+
+        if ((counter+1) > counter2) {
+            cout << "wrong value ";
+            break;
+        }
+    }   
+    return counter;
 }
+
 template <typename T>
 void push_index(Ring_struct<T>& rg, int indx, T val) {
     Ring_element<T>* abc = rg.first;
@@ -161,7 +184,7 @@ void push_index(Ring_struct<T>& rg, int indx, T val) {
     
 }
 template <typename T>
-void pop_index(Ring_struct<T>& rg, int indx) {
+T pop_index(Ring_struct<T>& rg, int indx) {
     Ring_element<T>* abc= rg.first;
     int counter = 0;
     while (counter != indx) {
@@ -173,40 +196,40 @@ void pop_index(Ring_struct<T>& rg, int indx) {
     Ring_element<T>* gh = abc->next;
     def->next = gh;
     gh->prev = def;
+    T val = abc->value;
     delete abc;
-   
+    return val;
 }
 template <typename T>
 int size(Ring_struct<T>& rg) {
-    int counter = 1;
+    int counter = 0;
     Ring_element<T>* abc = rg.first;
-    while (abc != rg.last) {
-        abc = abc->next;
-        counter++;
+    if (rg.first == nullptr) {
+        cout << "empty";
     }
-    cout << "size of this list =  " << counter;
+    else {
+        while (abc != rg.last) {
+            abc = abc->next;
+            counter++;
+
+        }
+        cout << "size of this list =  " << counter;
+    }
     return counter;
 }
 template <typename T>
-void push_point(Ring_struct<T>& rg, Ring_element<T>* abc, T val) {
-    
-    Ring_element<T>* new_el;
-    new_el = rg.first;
-    int counter = 0;
-    while (new_el != abc) {
-        counter++;
-        new_el = new_el->next;
-    }
-    new_el = new_el->next;
+void push_point(Ring_struct<T>& rg, Ring_element<T>* abc, T val)
+{ 
+    Ring_element<T>* new_el = new Ring_element<T>;  
     new_el->value = val;
-    Ring_element<T>* gh = new_el->next;
+    Ring_element<T>* gh = abc->next->next;
+    abc->next = new_el;
     new_el->prev = abc;
     new_el->next = gh;
-    abc->next = new_el;
-
+  
 }
 template <typename T>
-void index_value(Ring_struct<T>& rg, int indx) {
+T index_value(Ring_struct<T>& rg, int indx) {
     Ring_element<T>* abc = rg.first;
     int counter = 0;
     while (counter != indx) {
@@ -215,9 +238,10 @@ void index_value(Ring_struct<T>& rg, int indx) {
     }
     Ring_element<T>* def = abc;
     cout << " element`s value = " << def->value;
+    return def->value;
 }
 template <typename T>
- void pop_point(Ring_struct<T>& rg, Ring_element<T>* abc) {
+ T pop_point(Ring_struct<T>& rg, Ring_element<T>* abc) {
     Ring_element<T>* new_el;
     new_el = rg.first;
     int counter = 0;
@@ -225,10 +249,11 @@ template <typename T>
         counter++;
         new_el = new_el->next;
     }
+    T val = abc->value;
     new_el->next ->prev = new_el->prev;
     new_el->prev -> next = new_el->next;
     delete abc;
- 
+    return val;
 }
  int main() {
 
@@ -236,7 +261,7 @@ template <typename T>
 
      Ring_element<int> elem;
      Ring_struct<int> rg;
-     int val = 4;
+     int val = 720207;
      int val2 = 18;
      int val3 = 12;
      int indx = 5;
@@ -263,6 +288,7 @@ template <typename T>
      pop_last(rg);
      print(rg);
      cout << endl;
+
      find_pos(rg, val);
      cout << endl;
      print(rg);
@@ -288,6 +314,8 @@ template <typename T>
      print(rg);
      cout << endl;
      destructor(rg);
+     size(rg);
+     cout << endl;
      print(rg);
 
      cout << endl;
