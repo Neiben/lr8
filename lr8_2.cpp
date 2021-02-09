@@ -83,21 +83,22 @@ void push_index(list_arr<T, size>& LA, T val, int indx)
 	}
 }
 template<typename T , int size>
-void pop_first(list_arr<T, size>& LA ) {
+T pop_first(list_arr<T, size>& LA ) {
 	for (int i = 0; i < LA.true_size; i++) {
 		LA.value[i] = LA.value[i + 1];
 	}
 	LA.true_size--;
+	return LA.value[0];
 }
 template <typename T, int size>
-void pop_last(list_arr<T, size>& LA) {
-	for (int i = 0; i > LA.true_size; i++ ) {
-		LA.value[i] = LA.value[i - 1];
-	}
+T pop_last(list_arr<T, size>& LA) {
+	
+	LA.value[LA.true_size] = LA.value[LA.true_size-1];	
 	LA.true_size--;
+	return LA.value[LA.true_size];
 }
 template <typename T, int size>
-void pop_index(list_arr<T, size>& LA, int indx) {
+T pop_index(list_arr<T, size>& LA, int indx) {
 	if (indx <= size) {
 		for (int i = indx; i < LA.true_size; i++) {
 			LA.value[i] = LA.value[i+1];
@@ -107,6 +108,7 @@ void pop_index(list_arr<T, size>& LA, int indx) {
 	else {
 		cout << " unvaliable operation " << endl;
 	}
+	return (LA.value[indx]);
 }
  template <typename T, int size>
  void size_l(list_arr<T, size>& LA) {
@@ -117,7 +119,7 @@ void pop_index(list_arr<T, size>& LA, int indx) {
 	 cout << counter;
  }
 template <typename T , int size>
-void find_pos(list_arr<T, size>& LA, T val) {
+int find_pos(list_arr<T, size>& LA, T val) {
 	int counter = 0;
 	for (int i = 0; i < LA.true_size; i++) {
 		if (LA.value[i] == val) {
@@ -125,16 +127,18 @@ void find_pos(list_arr<T, size>& LA, T val) {
 		}		
 	}
 	cout << counter;
+	return counter;
 }
 
 template <typename T, int size>
-void get_value(list_arr<T, size>& LA, int indx) {
+T get_value(list_arr<T, size>& LA, int indx) {
 	if (indx <= LA.true_size) {
 		cout << LA.value[indx] << endl;
 	}	
 	else {
 		cout << " unvaliable operation ";
 	}
+	return LA.value[indx];
 }
 
 
