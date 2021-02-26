@@ -91,14 +91,16 @@ T pop_first(list_arr<T, size>& LA ) {
 	return LA.value[0];
 }
 template <typename T, int size>
-T pop_last(list_arr<T, size>& LA) {
-	
+T pop_last(list_arr<T, size>& LA) 
+{
+	T last = LA.value[LA.true_size];
 	LA.value[LA.true_size] = LA.value[LA.true_size-1];	
 	LA.true_size--;
-	return LA.value[LA.true_size];
+	return last;
 }
 template <typename T, int size>
 T pop_index(list_arr<T, size>& LA, int indx) {
+	T pos = LA.value[indx];
 	if (indx <= size) {
 		for (int i = indx; i < LA.true_size; i++) {
 			LA.value[i] = LA.value[i+1];
@@ -108,14 +110,11 @@ T pop_index(list_arr<T, size>& LA, int indx) {
 	else {
 		cout << " unvaliable operation " << endl;
 	}
-	return (LA.value[indx]);
+	return (pos);
 }
  template <typename T, int size>
  void size_l(list_arr<T, size>& LA) {
-	 int counter = 0;
-	 for (int i = 0; i < LA.true_size; i++) {
-		 counter++;
-	 }
+	 int counter = LA.true_size;
 	 cout << counter;
  }
 template <typename T , int size>
@@ -144,10 +143,8 @@ T get_value(list_arr<T, size>& LA, int indx) {
 
 template<typename T, int size>
 void destructor(list_arr<T, size>& LA) {
-	for (int i = 0; i < LA.true_size; i++) {
-		LA.true_size--;
-	}
-	LA.true_size--;
+	LA.true_size = 0;
+	
 }
 int main() {
 
