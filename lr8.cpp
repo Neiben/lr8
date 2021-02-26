@@ -85,14 +85,15 @@ void push_start(Ring_struct<T>& rg, T val) {
         abc->value = val;
         rg.first = abc;
         rg.last = abc;
-        rg.first->next = rg.last;
-        rg.last->prev = rg.first;
+        abc->next = abc;
+        abc->prev = abc;
     }
     else {
         Ring_element<T>* abc = new Ring_element<T>;
         abc->value = val;
         Ring_element<T>* def = rg.first;
        rg.first=abc;
+       def->prev = abc;
        abc-> next = def;
        abc->prev = rg.last;
        rg.last->next = abc;
@@ -123,10 +124,11 @@ T pop_first(Ring_struct<T>& rg) {
     Ring_element<T>* abc = rg.first;  
    Ring_element<T>* rl = rg.first->next;;
    T val = abc->value;   
-    rg.first = rl;
     rl->next = abc->next->next;
     rl->prev = rg.last;
+    rg.last->next = rl;
     delete abc;
+    rg.first = rl;
     return val;
 }
 template <typename T>
@@ -134,10 +136,10 @@ T pop_last(Ring_struct<T>& rg) {
     Ring_element<T>* abc = rg.last;
     Ring_element<T>* rl = rg.last->prev;
     T val = abc->value;
-    rg.last = rl;
     rl->prev = abc->prev->prev;
     rl->next = rg.first;
     delete abc;
+    rg.last = rl;
     return val;
 }
 template <typename T>
@@ -218,15 +220,19 @@ int size(Ring_struct<T>& rg) {
     return counter;
 }
 template <typename T>
-void push_point(Ring_struct<T>& rg, Ring_element<T>* abc, T val)
+void push_point(Ring_struct<T>& rg, Ring_element<T>* point, T val)
 { 
     Ring_element<T>* new_el = new Ring_element<T>;  
     new_el->value = val;
-    Ring_element<T>* gh = abc->next->next;
-    abc->next = new_el;
+    Ring_element<T>* abc = rg.first;
+    while (abc != point) {
+        abc = abc->next;
+  }
+    Ring_element<T>* def = abc -> next;
+    new_el->next = def;
     new_el->prev = abc;
-    new_el->next = gh;
-  
+    abc -> next = new_el;
+    def->prev = new_el;
 }
 template <typename T>
 T index_value(Ring_struct<T>& rg, int indx) {
@@ -244,9 +250,7 @@ template <typename T>
  T pop_point(Ring_struct<T>& rg, Ring_element<T>* abc) {
     Ring_element<T>* new_el;
     new_el = rg.first;
-    int counter = 0;
     while (new_el != abc) {
-        counter++;
         new_el = new_el->next;
     }
     T val = abc->value;
