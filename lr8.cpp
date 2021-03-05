@@ -124,7 +124,6 @@ T pop_first(Ring_struct<T>& rg) {
     Ring_element<T>* abc = rg.first;  
    Ring_element<T>* rl = rg.first->next;;
    T val = abc->value;   
-    rl->next = abc->next->next;
     rl->prev = rg.last;
     rg.last->next = rl;
     delete abc;
@@ -136,8 +135,8 @@ T pop_last(Ring_struct<T>& rg) {
     Ring_element<T>* abc = rg.last;
     Ring_element<T>* rl = rg.last->prev;
     T val = abc->value;
-    rl->prev = abc->prev->prev;
     rl->next = rg.first;
+    rg.first->prev = rl;
     delete abc;
     rg.last = rl;
     return val;
